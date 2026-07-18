@@ -36,25 +36,9 @@ public class PdfCharacterStripper extends PDFTextStripper {
     protected void writeString(String text, List<TextPosition> positions) throws IOException {
         for (TextPosition position : positions) {
             PdfCharacter character = new PdfCharacter();
-            String unicode = position.getUnicode();
-            if (unicode == null || unicode.isEmpty()) {
-                return;
-            }
-            character.setValue(position.getUnicode().charAt(0));
-
-            BoundingBox boundingBox = new BoundingBox();
-            boundingBox.setX(position.getXDirAdj());
-            boundingBox.setY(position.getYDirAdj());
-            boundingBox.setWidth(position.getWidthDirAdj());
-            boundingBox.setHeight(position.getHeightDir());
-            character.setBoundingBox(boundingBox);
-
-            FontStyle fontStyle = new FontStyle();
-            fontStyle.setFontName(position.getFont().toString());
-            fontStyle.setFontSize(position.getFontSize());
-            fontStyle.setSpaceWidth(position.getWidthOfSpace());
-            character.setFontStyle(fontStyle);
-
+            populateUnicodeValue(character, position);
+            populateBoundingBoxProperties(character, position);
+            populateFontProperties(character, position);
             currentPage.getCharacters().add(character);
         }
     }
@@ -62,5 +46,30 @@ public class PdfCharacterStripper extends PDFTextStripper {
     @Override
     protected void endPage(PDPage page) throws IOException {
         super.endPage(page);
+    }
+
+    private void populateUnicodeValue(PdfCharacter character, TextPosition position) {
+        String unicode = position.getUnicode();
+        if (unicode == null || unicode.isEmpty()) {
+            return;
+        }
+        character.setValue(position.getUnicode().charAt(0));
+    }
+
+    private void populateBoundingBoxProperties(PdfCharacter character, TextPosition position) {
+        BoundingBox boundingBox = new BoundingBox();
+        boundingBox.setX(position.getXDirAdj());
+        boundingBox.setY(position.getYDirAdj());
+        boundingBox.setWidth(position.getWidthDirAdj());
+        boundingBox.setHeight(position.getHeightDir());
+        character.setBoundingBox(boundingBox);
+    }
+
+    private void populateFontProperties(PdfCharacter character, TextPosition position) {
+        FontStyle fontStyle = new FontStyle();
+        fontStyle.setFontName(position.getFont().toString());
+        fontStyle.setFontSize(position.getFontSize());
+        fontStyle.setSpaceWidth(position.getWidthOfSpace());
+        character.setFontStyle(fontStyle);
     }
 }

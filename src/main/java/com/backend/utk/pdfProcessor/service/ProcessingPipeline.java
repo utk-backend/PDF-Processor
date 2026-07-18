@@ -13,7 +13,7 @@ import java.util.List;
 public class ProcessingPipeline {
     private final List<PdfProcessor> processors = new ArrayList<>();
 
-    public ProcessingPipeline addHandler(PdfProcessor processor) {
+    public ProcessingPipeline addProcessor(PdfProcessor processor) {
         processors.add(processor);
         return this;
     }

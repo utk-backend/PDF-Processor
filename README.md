@@ -1,2 +1,1 @@
-> continue: https://chatgpt.com/c/6a5ba1e8-4604-83ee-863a-9d6ac8b5de04
-
+A PDF processing application built using Spring Boot and PDFBox library. 

@@ -9,32 +9,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WordBuilder {
-    private static final float WHITESPACE_MULTIPLIER = 0.01f;
+    private static final float WHITESPACE_MULTIPLIER = 0.25f;
+    private static final float LINE_THRESHOLD = 2.0f;
 
     public void build(PdfPage page) {
         List<PdfCharacter> currentWord = new ArrayList<>();
         PdfCharacter previous = null;
-        for(PdfCharacter current: page.getCharacters()){
-            if(isWhiteSpace(current)){
-                if(!currentWord.isEmpty()){
-                    page.getWords().add(createWord(currentWord));
-                    currentWord.clear();
-                }
+        for (PdfCharacter current : page.getCharacters()) {
+            if (isWhiteSpace(current)) {
+                finishCurrentWord(page, currentWord);
                 previous = null;
                 continue;
             }
 
-            if(previous != null && startsNewWord(previous, current)){
+            if (previous != null && startsNewWord(previous, current)) {
                 page.getWords().add(createWord(currentWord));
                 currentWord.clear();
             }
+            // Additional heuristics can be added here.
+
             currentWord.add(current);
             previous = current;
         }
         // Handling the last word
-        if(!currentWord.isEmpty()){
-            page.getWords().add(createWord(currentWord));
-        }
+        finishCurrentWord(page, currentWord);
     }
 
     private boolean isWhiteSpace(PdfCharacter character) {
@@ -42,16 +40,25 @@ public class WordBuilder {
     }
 
     private boolean startsNewWord(PdfCharacter previous, PdfCharacter current) {
+        if (isNewLine(previous, current)) {
+            return true;
+        }
         float gap = calculateGap(previous, current);
         return gap > previous.getFontStyle().getSpaceWidth() * WHITESPACE_MULTIPLIER;
+    }
+
+    private boolean isNewLine(PdfCharacter previous, PdfCharacter current) {
+        float yDifference =
+                Math.abs(
+                        previous.getBoundingBox().getY()
+                                - current.getBoundingBox().getY());
+        return yDifference > LINE_THRESHOLD;
     }
 
     private float calculateGap(PdfCharacter previous, PdfCharacter current) {
         BoundingBox previousBox = previous.getBoundingBox();
         BoundingBox currentBox = current.getBoundingBox();
-
         float previousEndX = previousBox.getX() + previousBox.getWidth();
-
         return currentBox.getX() - previousEndX;
     }
 
@@ -80,12 +87,9 @@ public class WordBuilder {
         float maxY = Float.MIN_VALUE;
 
         for (PdfCharacter character : characters) {
-
             BoundingBox box = character.getBoundingBox();
-
             minX = Math.min(minX, box.getX());
             minY = Math.min(minY, box.getY());
-
             maxX = Math.max(maxX, box.getX() + box.getWidth());
             maxY = Math.max(maxY, box.getY() + box.getHeight());
         }
@@ -98,6 +102,16 @@ public class WordBuilder {
         wordBox.setHeight(maxY - minY);
 
         return wordBox;
+    }
+
+    private void finishCurrentWord(
+            PdfPage page,
+            List<PdfCharacter> currentWord) {
+        if (currentWord.isEmpty()) {
+            return;
+        }
+        page.getWords().add(createWord(currentWord));
+        currentWord.clear();
     }
 
 }

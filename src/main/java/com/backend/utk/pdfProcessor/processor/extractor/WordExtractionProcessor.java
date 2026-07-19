@@ -8,14 +8,10 @@ import com.backend.utk.pdfProcessor.util.WordBuilder;
 import java.io.IOException;
 
 public class WordExtractionProcessor implements PdfProcessor {
-    private final WordBuilder wordBuilder;
-
-    public WordExtractionProcessor(WordBuilder wordBuilder) {
-        this.wordBuilder = wordBuilder;
-    }
 
     @Override
     public void process(PdfProcessingContext context) throws IOException {
+        WordBuilder wordBuilder = new WordBuilder();
         for(PdfPage page: context.getPdfDocument().getPages()){
             wordBuilder.build(page);
         }

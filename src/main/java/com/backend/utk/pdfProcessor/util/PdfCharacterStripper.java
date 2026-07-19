@@ -17,6 +17,7 @@ public class PdfCharacterStripper extends PDFTextStripper {
 
     public PdfCharacterStripper(PdfProcessingContext context) throws IOException {
         this.context = context;
+        setSortByPosition(true);
         this.pdfDocument = new PdfDocument();
         context.setPdfDocument(pdfDocument);
     }

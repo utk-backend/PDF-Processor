@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PdfLine {
+    private String text;
     private List<PdfWord> words = new ArrayList<>();
     private BoundingBox boundingBox;
 }

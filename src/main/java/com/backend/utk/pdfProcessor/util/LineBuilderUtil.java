@@ -5,7 +5,7 @@ import com.backend.utk.pdfProcessor.model.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LineBuilder {
+public class LineBuilderUtil {
     private static final float LINE_THRESHOLD = 2.0f;
     private static final String SEPARATOR = " ";
 
@@ -19,7 +19,6 @@ public class LineBuilder {
             currentLine.add(current);
             previousWord = current;
         }
-        // Handling the last word
         finishCurrentLine(page, currentLine);
     }
 

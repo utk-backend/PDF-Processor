@@ -6,7 +6,7 @@ import com.backend.utk.pdfProcessor.util.PdfCharacterStripper;
 
 import java.io.IOException;
 
-public class CharacterExtractionProcessor implements PdfProcessor {
+public class CharacterExtractor implements PdfProcessor {
     @Override
     public void process(PdfProcessingContext context) throws IOException {
         PdfCharacterStripper stripper = new PdfCharacterStripper(context);

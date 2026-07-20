@@ -3,10 +3,11 @@ package com.backend.utk.pdfProcessor;
 import com.backend.utk.pdfProcessor.model.PdfDocument;
 import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
-import com.backend.utk.pdfProcessor.processor.builder.LineBuilderProcessor;
-import com.backend.utk.pdfProcessor.processor.extractor.CharacterExtractionProcessor;
-import com.backend.utk.pdfProcessor.processor.extractor.LoadDocumentProcessor;
-import com.backend.utk.pdfProcessor.processor.extractor.WordExtractionProcessor;
+import com.backend.utk.pdfProcessor.processor.builder.LineBuilder;
+import com.backend.utk.pdfProcessor.processor.builder.ParagraphBuilder;
+import com.backend.utk.pdfProcessor.processor.extractor.CharacterExtractor;
+import com.backend.utk.pdfProcessor.processor.DocumentLoader;
+import com.backend.utk.pdfProcessor.processor.extractor.WordExtractor;
 import com.backend.utk.pdfProcessor.service.ProcessingPipeline;
 import com.backend.utk.pdfProcessor.util.DebugLogger;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,8 @@ import java.nio.file.Path;
 
 @SpringBootApplication
 public class PdfProcessorApplication implements CommandLineRunner {
+    private static final String PDF_DOCUMENT = "The Ultimate Hitchhikers Guide tothe Galaxy Omnibus - Douglas Adams.pdf";
+    private static final int PAGE_LIMIT = 20;
 
     public static void main(String[] args) {
         SpringApplication.run(PdfProcessorApplication.class, args);
@@ -24,25 +27,23 @@ public class PdfProcessorApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Path pdfPath = Path.of("The Ultimate Hitchhikers Guide tothe Galaxy Omnibus - Douglas Adams.pdf");
+        Path pdfPath = Path.of(PDF_DOCUMENT);
         PdfProcessingContext context = new PdfProcessingContext();
         context.setInputFile(pdfPath);
 
         ProcessingPipeline pipeline = new ProcessingPipeline()
-                .addProcessor(new LoadDocumentProcessor())
-                .addProcessor(new CharacterExtractionProcessor())
-                .addProcessor(new WordExtractionProcessor())
-                .addProcessor(new LineBuilderProcessor());
+                .addProcessor(new DocumentLoader())
+                .addProcessor(new CharacterExtractor())
+                .addProcessor(new WordExtractor())
+                .addProcessor(new LineBuilder())
+                .addProcessor(new ParagraphBuilder());
 
         pipeline.execute(context);
 
         PdfDocument document = context.getPdfDocument();
 
-        System.out.println("Pages : " + document.getPages().size());
-
-        int pageLimit = 20;
         for (PdfPage page : document.getPages()) {
-            if (page.getPageNumber() > pageLimit) {
+            if (page.getPageNumber() > PAGE_LIMIT) {
                 break;
             }
             DebugLogger.logPageDetails(page);

@@ -20,4 +20,5 @@ public class PdfPage {
     private List<PdfWord> words = new ArrayList<>();
     private List<PdfLine> lines = new ArrayList<>();
     private List<PdfParagraph> paragraphs = new ArrayList<>();
+    private PageLayout pageLayout;
 }

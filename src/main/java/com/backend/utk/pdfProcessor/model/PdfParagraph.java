@@ -11,6 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PdfParagraph {
+    private String text;
     private List<PdfLine> lines = new ArrayList<>();
     private BoundingBox boundingBox;
 }

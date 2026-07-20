@@ -7,7 +7,7 @@ import com.backend.utk.pdfProcessor.util.WordBuilder;
 
 import java.io.IOException;
 
-public class WordExtractionProcessor implements PdfProcessor {
+public class WordExtractor implements PdfProcessor {
 
     @Override
     public void process(PdfProcessingContext context) throws IOException {

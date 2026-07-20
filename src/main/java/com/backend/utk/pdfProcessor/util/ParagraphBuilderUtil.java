@@ -25,7 +25,6 @@ public class ParagraphBuilderUtil {
             }
 
             currentParagraph.add(current);
-
             previous = current;
         }
 

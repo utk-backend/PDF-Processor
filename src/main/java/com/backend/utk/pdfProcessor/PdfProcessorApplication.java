@@ -5,6 +5,9 @@ import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
 import com.backend.utk.pdfProcessor.processor.builder.LineBuilder;
 import com.backend.utk.pdfProcessor.processor.builder.ParagraphBuilder;
+import com.backend.utk.pdfProcessor.processor.cleaner.MetadataCleaner;
+import com.backend.utk.pdfProcessor.processor.cleaner.UnicodeCleaner;
+import com.backend.utk.pdfProcessor.processor.cleaner.WhitespaceCleaner;
 import com.backend.utk.pdfProcessor.processor.extractor.CharacterExtractor;
 import com.backend.utk.pdfProcessor.processor.DocumentLoader;
 import com.backend.utk.pdfProcessor.processor.extractor.WordExtractor;
@@ -36,7 +39,11 @@ public class PdfProcessorApplication implements CommandLineRunner {
                 .addProcessor(new CharacterExtractor())
                 .addProcessor(new WordExtractor())
                 .addProcessor(new LineBuilder())
-                .addProcessor(new ParagraphBuilder());
+                .addProcessor(new ParagraphBuilder())
+                .addProcessor(new WhitespaceCleaner())
+                .addProcessor(new MetadataCleaner())
+                .addProcessor(new UnicodeCleaner());
+
 
         pipeline.execute(context);
 

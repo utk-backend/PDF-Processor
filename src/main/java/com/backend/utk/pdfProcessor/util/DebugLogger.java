@@ -1,6 +1,7 @@
 package com.backend.utk.pdfProcessor.util;
 
 import com.backend.utk.pdfProcessor.model.PdfPage;
+import com.backend.utk.pdfProcessor.model.PdfParagraph;
 
 public class DebugLogger {
 
@@ -19,20 +20,9 @@ public class DebugLogger {
     }
 
     private static void logParagraphs(PdfPage page) {
-        System.out.printf("%-5s %-30s %-12s %-12s %-8s %-8s%n",
-                "No.", "Word", "X", "Y", "Width", "Height");
-
-        System.out.println("----------------------------------------------------------------------------");
-
         int index = 1;
-        for (var paragraph : page.getParagraphs()) {
-            System.out.printf("%-5d %-30s %-12.2f %-12.2f %-8.2f %-8.2f%n",
-                    index++,
-                    paragraph.getText(),
-                    paragraph.getBoundingBox().getX(),
-                    paragraph.getBoundingBox().getY(),
-                    paragraph.getBoundingBox().getWidth(),
-                    paragraph.getBoundingBox().getHeight());
+        for(PdfParagraph paragraph: page.getParagraphs()){
+            System.out.println((index++) + " " + paragraph.getText());
         }
     }
 

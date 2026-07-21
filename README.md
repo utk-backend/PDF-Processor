@@ -98,13 +98,14 @@ Return:
 ```
 
 ```
-POST http://localhost:11434/api/generate
-
-{
+curl --request POST \
+  --url http://localhost:11434/api/generate \
+  --header 'Content-Type: application/json' \
+  --data '{
   "model": "qwen2.5:1.5b",
   "prompt": "Classify the following text into Billing, Technical, Shipping, or General. Respond with only the category.\n\nText: My payment failed.",
   "stream": false
-}
+}'
 
 {
   "category": "Shipping"

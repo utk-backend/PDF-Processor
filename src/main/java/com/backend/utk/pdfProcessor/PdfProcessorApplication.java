@@ -1,7 +1,6 @@
 package com.backend.utk.pdfProcessor;
 
 import com.backend.utk.pdfProcessor.model.PdfDocument;
-import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
 import com.backend.utk.pdfProcessor.service.processor.builder.LineBuilder;
 import com.backend.utk.pdfProcessor.service.processor.builder.ParagraphBuilder;
@@ -13,17 +12,22 @@ import com.backend.utk.pdfProcessor.service.processor.extractor.CharacterExtract
 import com.backend.utk.pdfProcessor.service.processor.DocumentLoader;
 import com.backend.utk.pdfProcessor.service.processor.extractor.WordExtractor;
 import com.backend.utk.pdfProcessor.service.ProcessingPipeline;
-import com.backend.utk.pdfProcessor.util.DebugLogger;
+import com.backend.utk.pdfProcessor.service.renderer.PdfRenderer;
+import com.backend.utk.pdfProcessor.service.renderer.RenderDocument;
+import com.backend.utk.pdfProcessor.service.renderer.RenderDocumentMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 @SpringBootApplication
 public class PdfProcessorApplication implements CommandLineRunner {
     private static final String PDF_DOCUMENT = "The Ultimate Hitchhikers Guide tothe Galaxy Omnibus - Douglas Adams.pdf";
     private static final int PAGE_LIMIT = 20;
+    public static final String OUTPUT_FILE_NAME = "clean-output.pdf";
 
     public static void main(String[] args) {
         SpringApplication.run(PdfProcessorApplication.class, args);
@@ -49,12 +53,11 @@ public class PdfProcessorApplication implements CommandLineRunner {
 
         pipeline.execute(context);
         PdfDocument document = context.getPdfDocument();
+        RenderDocument renderDocument = new RenderDocumentMapper().map(document);
+        PdfRenderer renderer = new PdfRenderer();
 
-        for (PdfPage page : document.getPages()) {
-            if (page.getPageNumber() > PAGE_LIMIT) {
-                break;
-            }
-            DebugLogger.logPageDetails(page);
+        try (OutputStream output = Files.newOutputStream(Path.of(OUTPUT_FILE_NAME))) {
+            renderer.render(renderDocument.getRenderParagraphs(), output);
         }
 
         context.getSourceDocument().close();

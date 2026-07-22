@@ -1,8 +1,8 @@
-package com.backend.utk.pdfProcessor.processor.extractor;
+package com.backend.utk.pdfProcessor.service.processor.extractor;
 
 import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
-import com.backend.utk.pdfProcessor.processor.PdfProcessor;
+import com.backend.utk.pdfProcessor.service.processor.PdfProcessor;
 import com.backend.utk.pdfProcessor.util.WordBuilder;
 
 import java.io.IOException;

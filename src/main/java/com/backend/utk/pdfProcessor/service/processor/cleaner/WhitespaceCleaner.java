@@ -1,4 +1,4 @@
-package com.backend.utk.pdfProcessor.processor.cleaner;
+package com.backend.utk.pdfProcessor.service.processor.cleaner;
 
 import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfParagraph;

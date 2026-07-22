@@ -1,8 +1,8 @@
-package com.backend.utk.pdfProcessor.processor.builder;
+package com.backend.utk.pdfProcessor.service.processor.builder;
 
 import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
-import com.backend.utk.pdfProcessor.processor.PdfProcessor;
+import com.backend.utk.pdfProcessor.service.processor.PdfProcessor;
 import com.backend.utk.pdfProcessor.util.LineBuilderUtil;
 
 public class LineBuilder implements PdfProcessor {

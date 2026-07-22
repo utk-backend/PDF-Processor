@@ -2,7 +2,7 @@ package com.backend.utk.pdfProcessor.service;
 
 import com.backend.utk.pdfProcessor.exception.PdfProcessingException;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
-import com.backend.utk.pdfProcessor.processor.PdfProcessor;
+import com.backend.utk.pdfProcessor.service.processor.PdfProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

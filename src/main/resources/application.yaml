@@ -1,3 +1,7 @@
 spring:
   application:
     name: pdf-processor
+
+ollama:
+  host: localhost:11434
+  endpoint: /api/generate

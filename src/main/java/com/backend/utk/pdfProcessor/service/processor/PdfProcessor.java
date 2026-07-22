@@ -1,4 +1,4 @@
-package com.backend.utk.pdfProcessor.processor;
+package com.backend.utk.pdfProcessor.service.processor;
 
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
 

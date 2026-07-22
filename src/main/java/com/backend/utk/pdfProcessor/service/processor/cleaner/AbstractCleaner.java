@@ -1,8 +1,8 @@
-package com.backend.utk.pdfProcessor.processor.cleaner;
+package com.backend.utk.pdfProcessor.service.processor.cleaner;
 
 import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
-import com.backend.utk.pdfProcessor.processor.PdfProcessor;
+import com.backend.utk.pdfProcessor.service.processor.PdfProcessor;
 
 import java.io.IOException;
 

@@ -3,14 +3,15 @@ package com.backend.utk.pdfProcessor;
 import com.backend.utk.pdfProcessor.model.PdfDocument;
 import com.backend.utk.pdfProcessor.model.PdfPage;
 import com.backend.utk.pdfProcessor.model.PdfProcessingContext;
-import com.backend.utk.pdfProcessor.processor.builder.LineBuilder;
-import com.backend.utk.pdfProcessor.processor.builder.ParagraphBuilder;
-import com.backend.utk.pdfProcessor.processor.cleaner.MetadataCleaner;
-import com.backend.utk.pdfProcessor.processor.cleaner.UnicodeCleaner;
-import com.backend.utk.pdfProcessor.processor.cleaner.WhitespaceCleaner;
-import com.backend.utk.pdfProcessor.processor.extractor.CharacterExtractor;
-import com.backend.utk.pdfProcessor.processor.DocumentLoader;
-import com.backend.utk.pdfProcessor.processor.extractor.WordExtractor;
+import com.backend.utk.pdfProcessor.service.processor.builder.LineBuilder;
+import com.backend.utk.pdfProcessor.service.processor.builder.ParagraphBuilder;
+import com.backend.utk.pdfProcessor.service.processor.cleaner.MetadataCleaner;
+import com.backend.utk.pdfProcessor.service.processor.cleaner.PageNumberCleaner;
+import com.backend.utk.pdfProcessor.service.processor.cleaner.UnicodeCleaner;
+import com.backend.utk.pdfProcessor.service.processor.cleaner.WhitespaceCleaner;
+import com.backend.utk.pdfProcessor.service.processor.extractor.CharacterExtractor;
+import com.backend.utk.pdfProcessor.service.processor.DocumentLoader;
+import com.backend.utk.pdfProcessor.service.processor.extractor.WordExtractor;
 import com.backend.utk.pdfProcessor.service.ProcessingPipeline;
 import com.backend.utk.pdfProcessor.util.DebugLogger;
 import org.springframework.boot.CommandLineRunner;
@@ -42,11 +43,11 @@ public class PdfProcessorApplication implements CommandLineRunner {
                 .addProcessor(new ParagraphBuilder())
                 .addProcessor(new WhitespaceCleaner())
                 .addProcessor(new MetadataCleaner())
-                .addProcessor(new UnicodeCleaner());
+                .addProcessor(new UnicodeCleaner())
+                .addProcessor(new PageNumberCleaner());
 
 
         pipeline.execute(context);
-
         PdfDocument document = context.getPdfDocument();
 
         for (PdfPage page : document.getPages()) {
@@ -55,6 +56,7 @@ public class PdfProcessorApplication implements CommandLineRunner {
             }
             DebugLogger.logPageDetails(page);
         }
+
         context.getSourceDocument().close();
     }
 }

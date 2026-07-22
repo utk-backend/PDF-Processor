@@ -13,7 +13,7 @@ public class LineBuilderUtil {
         List<PdfWord> currentLine = new ArrayList<>();
         PdfWord previousWord = null;
         for (PdfWord current : page.getWords()) {
-            if(previousWord != null && startsNewLine(previousWord, current)){
+            if (previousWord != null && startsNewLine(previousWord, current)) {
                 finishCurrentLine(page, currentLine);
             }
             currentLine.add(current);
@@ -41,9 +41,9 @@ public class LineBuilderUtil {
 
     private String buildText(List<PdfWord> words) {
         StringBuilder builder = new StringBuilder();
-        for(int i = 0 ; i < words.size() ; i++){
+        for (int i = 0; i < words.size(); i++) {
             builder.append(words.get(i).getText());
-            if(i < words.size() - 1){
+            if (i < words.size() - 1) {
                 builder.append(SEPARATOR);
             }
         }
@@ -76,7 +76,7 @@ public class LineBuilderUtil {
     }
 
     private void finishCurrentLine(PdfPage page, List<PdfWord> currentLine) {
-        if(currentLine.isEmpty()){
+        if (currentLine.isEmpty()) {
             return;
         }
         PdfLine pdfLine = createLine(currentLine);

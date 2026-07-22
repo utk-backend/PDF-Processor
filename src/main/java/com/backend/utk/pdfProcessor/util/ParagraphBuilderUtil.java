@@ -1,5 +1,7 @@
 package com.backend.utk.pdfProcessor.util;
 
+import com.backend.utk.pdfProcessor.model.FontStyling;
+import com.backend.utk.pdfProcessor.enums.TextAlignment;
 import com.backend.utk.pdfProcessor.model.*;
 
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.List;
 public class ParagraphBuilderUtil {
     private static final float PARAGRAPH_MULTIPLIER = 1.5f;
     private static final float INDENT_THRESHOLD = 10.0f;
+    private static final float ALIGNMENT_TOLERANCE = 10f;
 
     public void build(PdfPage page) {
         PageLayout pageLayout = PageLayoutAnalyzer.analyze(page);
@@ -57,15 +60,92 @@ public class ParagraphBuilderUtil {
         return hasLargeVerticalGap || isIndented;
     }
 
-    private PdfParagraph createParagraph(List<PdfLine> lines) {
-
+    private PdfParagraph createParagraph(ParagraphCreationFields paragraphCreationFields) {
         PdfParagraph paragraph = new PdfParagraph();
-
-        paragraph.setLines(new ArrayList<>(lines));
-        paragraph.setText(buildText(lines));
-        paragraph.setBoundingBox(buildBoundingBox(lines));
-
+        paragraph.setLines(new ArrayList<>(paragraphCreationFields.pdfLines));
+        paragraph.setText(buildText(paragraphCreationFields.pdfLines));
+        paragraph.setBoundingBox(buildBoundingBox(paragraphCreationFields.pdfLines));
+        paragraph.setParagraphContext(buildParagraphContext(paragraphCreationFields, paragraph));
         return paragraph;
+    }
+
+    private ParagraphContext buildParagraphContext(ParagraphCreationFields paragraphCreationFields,
+                                                   PdfParagraph paragraph) {
+
+        ParagraphContext paragraphContext = ParagraphContext.builder()
+                .lineCount(paragraph.getLines().size())
+                .pageNumber(paragraphCreationFields.page.getPageNumber())
+                .fontSize(getMedianFontSize(paragraph.getLines()))
+                .fontStyling(getFontStyling(paragraph.getLines()))
+                .textAlignment(getParagraphAlignment(paragraphCreationFields.page, paragraph))
+                .build();
+        return paragraphContext;
+    }
+
+
+    private TextAlignment getParagraphAlignment(
+            PdfPage page,
+            PdfParagraph paragraph) {
+
+        BoundingBox box = paragraph.getBoundingBox();
+        float pageWidth = page.getWidth();
+        float leftMargin = box.getX();
+        float rightMargin = pageWidth - (box.getX() + box.getWidth());
+
+        if (Math.abs(leftMargin - rightMargin) <= ALIGNMENT_TOLERANCE) {
+            return TextAlignment.CENTER;
+        }
+        if (leftMargin < rightMargin) {
+            return TextAlignment.LEFT;
+        }
+
+        return TextAlignment.RIGHT;
+    }
+
+    private FontStyling getFontStyling(List<PdfLine> lines) {
+        int total = 0;
+        int bold = 0;
+        int italic = 0;
+        for (PdfLine line : lines) {
+            for (PdfWord word : line.getWords()) {
+                for (PdfCharacter character : word.getCharacters()) {
+                    FontStyle style = character.getFontStyle();
+                    total++;
+                    if (style.isBold()) {
+                        bold++;
+                    }
+                    if (style.isItalic()) {
+                        italic++;
+                    }
+                }
+            }
+        }
+
+        FontStyling styling = new FontStyling();
+        styling.setBold(bold > total / 2);
+        styling.setItalic(italic > total / 2);
+        return styling;
+    }
+
+    private float getMedianFontSize(List<PdfLine> lines) {
+        List<Float> fontSizes = new ArrayList<>();
+        for (PdfLine line : lines) {
+            for (PdfWord word : line.getWords()) {
+                for (PdfCharacter character : word.getCharacters()) {
+                    fontSizes.add(character.getFontStyle().getFontSize());
+                }
+            }
+        }
+        if (fontSizes.isEmpty()) {
+            return 0;
+        }
+        fontSizes.sort(Float::compare);
+        int middle = fontSizes.size() / 2;
+
+        if (fontSizes.size() % 2 == 0) {
+            return (fontSizes.get(middle - 1) + fontSizes.get(middle)) / 2f;
+        }
+        return fontSizes.get(middle);
     }
 
     private String buildText(List<PdfLine> lines) {
@@ -114,8 +194,14 @@ public class ParagraphBuilderUtil {
         if (currentParagraph.isEmpty()) {
             return;
         }
-        page.getParagraphs()
-                .add(createParagraph(currentParagraph));
+        ParagraphCreationFields paragraphCreationFields = new ParagraphCreationFields(page, currentParagraph);
+        page.getParagraphs().add(createParagraph(paragraphCreationFields));
         currentParagraph.clear();
+    }
+
+    private record ParagraphCreationFields(
+            PdfPage page,
+            List<PdfLine> pdfLines
+    ) {
     }
 }

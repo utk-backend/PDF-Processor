@@ -25,7 +25,7 @@ import java.nio.file.Path;
 
 @SpringBootApplication
 public class PdfProcessorApplication implements CommandLineRunner {
-    private static final String PDF_DOCUMENT = "The Ultimate Hitchhikers Guide tothe Galaxy Omnibus - Douglas Adams.pdf";
+    private static final String PDF_DOCUMENT = "The Guest List - Lucy Foley.pdf";
     private static final int PAGE_LIMIT = 20;
     public static final String OUTPUT_FILE_NAME = "clean-output.pdf";
 

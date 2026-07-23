@@ -10,10 +10,10 @@ public enum RenderPageLayout {
     PAPERBACK(
             430f,
             650f,
-            50f,
-            50f,
+            40f,
+            40f,
             60f,
-            60f
+            40f
     ),
 
     LETTER(
